@@ -5,8 +5,8 @@ const User = use('App/Models/User');
 class AuthController {
     async register({ request, response }) {
         try {
-            const { username, email, password } = request.all();
-            const user = await User.create({ username, email, password })
+            const { codigo_associado,username, email, password } = request.all();
+            const user = await User.create({ codigo_associado, username, email, password })
             return response.status(201).send({ data: user });
         } catch (error) {
             return response.status(400).send({
