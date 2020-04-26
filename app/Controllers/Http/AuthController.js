@@ -5,30 +5,35 @@ const User = use('App/Models/User');
 class AuthController {
     async register({ request, response }) {
         try {
-            const { codigo_associado,username, email, password } = request.all();
-            const user = await User.create({ codigo_associado, username, email, password })
-            return response.status(201).send({ data: user });
+            const { username, email,password,endereco } = request.all();
+           var  data = new Date()
+           data = data.getFullYear()
+           var random = Math.floor((Math.random() + 5000 + 5000) * 5000);
+           const codigo_associado = data +  random 
+              const usuario = await User.create({ codigo_associado, username, email, password,endereco })
+              response.redirect('/login')
+
+            
+            
         } catch (error) {
             return response.status(400).send({
                 message: 'Erro ao realizar cadastro!'
             })
         }
     }
-    async login({ request, response, auth }) {
-        const { email, password } = request.all()
-        console.log(auth)
-        let data = await auth.withRefreshToken().attempt(email, password)
-        return response.send({ data })
-
-    }
+    async login({request, auth, response}) {
+        const {email, password} = request.all();
+        let token = await auth.attempt(email, password);
+        return response.status(200).json({data: token, message: 'Login successfull', status: true});
+      }
     async refresh({ request, response, auth }) {
         var refresh_token = request.input('refresh_token');
 
         if (!refresh_token) {
             refresh_token = request.header('refresh_token');
         }
-        const user = await auth.newRefreshToken().generateForRefreshToken(refresh_token);
-        return response.send({ data: user })
+        const usuario = await auth.newRefreshToken().generateForRefreshToken(refresh_token);
+        return response.send({ data: usuario })
     }
     async logout({ request, response, auth }) {
         let refresh_token = request.input('refresh_token');
@@ -38,7 +43,7 @@ class AuthController {
         }
         const loggedOut = await auth.authenticator('jwt').revokeTokens([refresh_token], true); // "true" deleta o token da base
         
-        return response.status(204).send({ })//204 Indica que foi com sucesso e que a função é de retorno void
+        return response.status(204).send({ })
 
     }
     async forgot({ request, response }) {

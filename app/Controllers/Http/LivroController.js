@@ -1,55 +1,137 @@
 'use strict'
 
-const Database = use('Database');
-const User = use('App/Models/User');
-class AuthController {
-    async register({ request, response }) {
-        try {
-            const { username, email, password } = request.all();
-            const user = await User.create({ username, email, password })
-            return response.status(201).send({ data: user });
-        } catch (error) {
-            return response.status(400).send({
-                message: 'Erro ao realizar cadastro!'
-            })
-        }
+/** @typedef {import('@adonisjs/framework/src/Request')} Request */
+/** @typedef {import('@adonisjs/framework/src/Response')} Response */
+/** @typedef {import('@adonisjs/framework/src/View')} View */
+const Livro = use('App/Models/Livro')
+/**
+ * Resourceful controller for interacting with products
+ */
+class LivroController {
+  /**
+   * Show a list of all products.
+   * GET livros
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async index ({ request, response, view, pagination }) {
+    const palavra_chave = request.input('palavra_chave')
+    const query = Livro.query();
+    if(palavra_chave){
+      query.where('palavra_chave','ILIKE',`%${palavra_chave}%` )
     }
-    async login({ request, response, auth }) {
-        const { email, password } = request.all()
-        console.log(auth)
-        let data = await auth.withRefreshToken().attempt(email, password)
-        return response.send({ data })
+    const livros = await query.paginate()
+    return response.send(livros)
+  }
 
-    }
-    async refresh({ request, response, auth }) {
-        var refresh_token = request.input('refresh_token');
+  /**
+   * Render a form to be used for creating a new product.
+   * GET products/create
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async create ({ request, response, view }) {
+  }
 
-        if (!refresh_token) {
-            refresh_token = request.header('refresh_token');
-        }
-        const user = await auth.newRefreshToken().generateForRefreshToken(refresh_token);
-        return response.send({ data: user })
-    }
-    async logout({ request, response, auth }) {
-        let refresh_token = request.input('refresh_token');
+  /**
+   * Create/save a new product.
+   * POST products
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async store ({ request, response }) {
 
-        if (!refresh_token) {
-            refresh_token = request.header('refresh_token')
-        }
-        const loggedOut = await auth.authenticator('jwt').revokeTokens([refresh_token], true); // "true" deleta o token da base
+    try {
         
-        return response.status(204).send({ })//204 Indica que foi com sucesso e que a função é de retorno void
+      const {autor, titulo , editora , local_edicao  , palavra_chave ,exemplar} = request.all();
+      
+      var random = Math.floor((Math.random() + 5000 + 5000) * 5000);
+      const isbn = "989899-" +  random
 
-    }
-    async forgot({ request, response }) {
+    
 
+      const livro = await Livro.create({autor,  titulo , editora , local_edicao , isbn , palavra_chave ,exemplar})
+      return response.status(201).send(livro)  
+    } catch (error) {
+      response.status(400).send({ message: 'Não foi possivel criar o livro '})
     }
-    async remember({ request, response }) {
+    
+  }
 
-    }
-    async reset({ request, response }) {
+  /**
+   * Display a single product.
+   * GET products/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async show ({ params: { id }, request, response, view }) {
+    const livro = await Livro.findOrFail(id)
+    return response.send(livro)
+  }
 
+  /**
+   * Render a form to update an existing product.
+   * GET products/:id/edit
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async edit ({ params, request, response, view }) {
+  }
+
+  /**
+   * Update product details.
+   * PUT or PATCH products/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async update ({ params: { id}, request, response }) {
+    const livro = await Livro.findOrFail(id)
+    try {
+      
+      const {titulo , editora , local_edicao , isbn , palavra_chave } = request.all()
+      livro.merge({ titulo , editora , local_edicao , isbn , palavra_chave })
+      await livro.save()
+      return response.send(livro)
+    } catch (error) {
+      return response.status(400).send({ message: 'Erro ao atualizar o livro'})
     }
+
+  }
+
+  /**
+   * Delete a product with id.
+   * DELETE products/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async destroy ({ params: { id }, request, response }) {
+    const livro = await Livro.findOrFail(id)
+    try {
+      await livro.delete()
+      return response.status(204).send()
+    } catch (error) {
+      return response.status(500).send({ message: 'Não foi possivel deletar o livro '});
+    }
+
+  }
 }
 
-module.exports = AuthController
+module.exports = LivroController

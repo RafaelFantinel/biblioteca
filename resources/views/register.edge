@@ -1,0 +1,35 @@
+    @layout('main')
+    @section('content')
+    <div class="container ">
+      <div class="row">
+          <div class="col-md-4  bg-white p-3 mt-5 shadow no-border rounded offset-md-4">
+            <form method="POST" action="{{route('/register')}}">
+              {{ csrfField() }}
+                <div class="form-group">
+                  <label for="name">Nome Completo</label>
+                  <input type="text" class="form-control" id="username" name="username"  value="{{old('username','')}}" placeholder="Digite seu Nome completo">
+                  {{ elIf('<span class=text-danger>$self</span>', getErrorFor('username'), hasErrorFor('username')) }}
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" class="form-control" id="email"  name="email" value="{{old('email','')}}" placeholder="Digite seu Email">
+                  {{ elIf('<span class=text-danger>$self</span>', getErrorFor('email'), hasErrorFor('email')) }}
+                </div>
+                <div class="form-group">
+                  <label for="pasword">Senha</label>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Senha">
+                  {{ elIf('<span class=text-danger>$self</span>', getErrorFor('password'), hasErrorFor('password')) }}
+                </div>
+                <div class="form-group">
+                    <label for="endereco">Endereço</label>
+                    <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Endereço">
+                    {{ elIf('<span class=text-danger>$self</span>', getErrorFor('endereco'), hasErrorFor('endereco')) }}
+                  </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+          </div>
+      </div>
+    </div>
+  @endsection
