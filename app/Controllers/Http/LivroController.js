@@ -18,13 +18,11 @@ class LivroController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view, pagination }) {
-    const palavra_chave = request.input('palavra_chave')
-    const query = Livro.query();
-    if(palavra_chave){
-      query.where('palavra_chave','ILIKE',`%${palavra_chave}%` )
-    }
-    const livros = await query.paginate()
-    return response.send(livros)
+    const livros = await Livro.all()
+
+    return view.render('/livros', {
+      livros: livros.toJSON()
+    })
   }
 
   /**
@@ -75,10 +73,14 @@ class LivroController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params: { id }, request, response, view }) {
-    const livro = await Livro.findOrFail(id)
-    return response.send(livro)
+  async show ({ params, view }) {
+    console.log('show')
+    const livros = await Livro.find(params.id)
+    return view.render('/livros', {
+      quote: quote.toJSON()
+    })
   }
+  
 
   /**
    * Render a form to update an existing product.

@@ -1,0 +1,30 @@
+@layout('main')
+@section('content')
+<div class="container ">
+  <div class="row">
+      <div class="col-md-4  bg-white p-3 mt-5 shadow no-border rounded offset-md-4">
+        <form method="POST" action="{{route('/emprestimos')}}">
+          {{ csrfField() }}
+            <div class="form-group">
+              <label for="user_id">User_id</label>
+              <input type="text" class="form-control" id="user_id" name="user_id"   placeholder="User_id">
+              
+            </div>
+            <div class="form-group">
+              <label for="livro_id">Livro_id</label>
+              <input type="text" class="form-control" id="livro_id"  name="livro_id"  placeholder="Livro_id">
+              
+            </div>
+            <div class="form-group">
+              <label for="exemplar">Exemplar</label>
+              <input type="text" class="form-control" id="exemplar" name="exemplar" placeholder="Exemplar">
+              
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+      </div>
+  </div>
+</div>
+@endsection

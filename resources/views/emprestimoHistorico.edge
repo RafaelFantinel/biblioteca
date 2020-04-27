@@ -1,0 +1,38 @@
+@layout('main')
+@section('content')
+<div class="row">
+    
+    @each(emprestimos in emprestimos)
+        <div class="col-md-4 mb-4 quote-wrapper">
+                <div class="card shadow-lg bg-dark text-white">
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            
+                            <p>{{emprestimos.titulo}}</p>
+                            
+                            
+                            <footer class="blockquote-footer">
+                                <cite title="Source Title"> {{emprestimos.username}}</cite>
+                            </footer>
+                        </blockquote>
+                        
+                        <div>
+                            
+                            
+
+                                
+                                
+                              </div>
+
+                        
+                    </div>
+                </div>
+            
+           
+        </div>
+       
+        @endeach
+    
+    
+</div>
+@endsection

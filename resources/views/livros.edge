@@ -1,0 +1,61 @@
+@layout('main')
+@section('content')
+<div class="row">
+    @each(livros in livros)
+        <div class="col-md-4 mb-4 quote-wrapper">
+                <div class="card shadow-lg bg-dark text-white">
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <div class="tituloCard">
+                            Titulo
+                          </div>
+                            <p>{{livros.titulo}}</p>
+                            <div class="editoraCard">
+                            Editora
+                            </div>
+                            <p>{{livros.editora}}</p>
+                            <div class="localEdicaoCard">
+                            Local da edição
+                            </div>
+                            <p>{{livros.local_edicao}}</p>
+                            <div class="isbnCard">
+
+                            Codigo isbn
+                            </div>
+                            <p>{{livros.isbn}}</p>
+                            <div class="chaveCard">
+
+                            Palavra Chave
+                            </div>
+                            <p>{{livros.palavra_chave}}</p>
+                            <div class="exemplarCard">
+                            exemplar
+                            </div>
+                            <p>{{livros.exemplar}}</p>
+                        
+                            <footer class="blockquote-footer">
+                                <cite title="Source Title"> {{livros.autor}}</cite>
+                            </footer>
+                        </blockquote>
+                        <div>
+                            
+                            
+
+                                
+                                
+                              </div>
+
+                        
+                    </div>
+                </div>
+           
+        </div>
+        @else
+        <div class="col-md-12 empty-quote text-center">
+                <p>No inspirational quote has been created</p>
+         </div>
+        @endeach
+    
+    
+</div>
+@endsection

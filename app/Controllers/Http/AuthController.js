@@ -2,8 +2,10 @@
 
 const Database = use('Database');
 const User = use('App/Models/User');
+
 class AuthController {
     async register({ request, response }) {
+        console.log('register')
         try {
             const { username, email,password,endereco } = request.all();
            var  data = new Date()
@@ -11,8 +13,8 @@ class AuthController {
            var random = Math.floor((Math.random() + 5000 + 5000) * 5000);
            const codigo_associado = data +  random 
               const usuario = await User.create({ codigo_associado, username, email, password,endereco })
-              response.redirect('/login')
 
+              
             
             
         } catch (error) {
@@ -22,10 +24,11 @@ class AuthController {
         }
     }
     async login({request, auth, response}) {
+        console.log('login')
         const {email, password} = request.all();
         let token = await auth.attempt(email, password);
-        return response.status(200).json({data: token, message: 'Login successfull', status: true});
-      }
+        response.redirect('/')
+    }
     async refresh({ request, response, auth }) {
         var refresh_token = request.input('refresh_token');
 

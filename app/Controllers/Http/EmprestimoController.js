@@ -18,23 +18,26 @@ class EmprestimoController {
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param { object } ctx.paginate
    */
-  async index({ request, response, pagination }) {
-    const { titulo, id } = request.only(['titulo', 'id '])
-    const query = Emprestimo.query()
+  async index ({ request, response, view }) {
+    const emprestimos = await Emprestimo.all()
 
-    if (titulo && id) {//Filtra por titulo ou pelo id
-      query.where('titulo' , titulo).orWhere('id', 'ILIKE', `%${id}%`)
-    } else if (titulo) {
-      query.where('titulo', titulo)
-    } else if (id) {
-      query.where('id', 'LIKE', `%${id}%`)
-    }
-
-    var emprestimos = await query.paginate()
-    return response.send(emprestimos)
+    return view.render('/emprestimoHistorico', {
+      emprestimos: emprestimos.toJSON()
+    })
   }
+
+
+
+
+
+  async alugar ({ request,response, view }) {
+    
+return view.render('alugar')
+}
+  
+  
+
 
   /**
    * Create/save a new order.
@@ -44,17 +47,19 @@ class EmprestimoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {
+  async store({ request,auth, response,view }) {
     try {
-
+console.log('store')
+      auth.getUser()
       const { user_id, livro_id, exemplar } = request.all();
 
       const titulo = await Database.select('titulo').from('livros').where('id', livro_id)
       const username = await Database.select('username').from('users').where('id', user_id)
+      titulo.toString();
+      username.toString();
 
-      const emprestimo = await Emprestimo.create({ username,user_id,livro_id,exemplar,titulo })
-      
-      return response.status(201).send(emprestimo)
+      const emprestimos = await Emprestimo.create({ username,user_id,livro_id,exemplar,titulo })
+      return view.render('/home')
     } catch (error) {
       response.status(400).send(error.toString())
     }
@@ -71,9 +76,10 @@ class EmprestimoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params: { id }, response, transform }) {
+  async show({ params, response,view }) {
+    console.log('show')
     const emprestimo = await Emprestimo.findOrFail(id)
-    return response.send(emprestimo)
+    return render.view('/emprestimosHistorico')
   }
 
   /**
@@ -85,6 +91,7 @@ class EmprestimoController {
    * @param {Response} ctx.response
    */
   async update({ params: { id }, request, response, transform }) {
+    console.log('update')
     const emprestimo = await Emprestimo.findOrFail(id)
     try {
       
