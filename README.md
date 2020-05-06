@@ -1,6 +1,5 @@
-# Adonis fullstack application
+# Aplicação de Biblioteca Desenvolvida Para Aula de Engenharia de Software em AdonisJS
 
-Full-Stack Api de Biblioteca desenvolvido para trabalho de Engenharia de Software.
 Tecnologias
 1. AdonisJS
 2. Bodyparser
